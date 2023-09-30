@@ -1,0 +1,32 @@
+{% load static %}
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Магазин сладостей{% endblock %}</title>
+    <link href="{% static 'css/cascad.css' %}" rel="stylesheet">
+  </head>
+  <body>
+    <div id="header">
+      <a href="/" class="logo">Магазин сладостей</a>
+    </div>
+    <div id="subheader">
+      <div class="cart">
+        {% with total_items=cart|length %}
+          {% if total_items > 0 %}
+            Ваша корзина покупок:
+            <a href="{% url 'cart:cart_detail' %}">
+              {{ total_item }} Итого {{ total_item|pluralize }},
+              BYN {{ cart.get_total_price }}
+            </a>
+          {% elif not order %}
+            Корзина покупок пуста.
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    <div id="content">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
