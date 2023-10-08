@@ -1,5 +1,6 @@
-DB_NAME=BASE_DIR / 'db.sqlite3'
-DB_USER=django_db
-DB_PASSWORD=pwd
-DB_HOST=db
+DB_NAME=mydb
+DB_USER=mydb_user
+DB_PASSWORD=password
+DB_HOST=localhost
 DB_PORT=5432
+E_H_PAS = rqhynvexdwiqebzl

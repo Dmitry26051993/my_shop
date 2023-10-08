@@ -1,38 +1,34 @@
-from http import HTTPStatus
-from django.test import Client, TestCase
+from django.test import TestCase
+from my_shop.models import Category, Product
 
-from my_shop.models import Product
-
-
-class StaticURLTests(TestCase):
-    def setUp(self) -> None:
-        self.guest_client = Client()
-
-    def test_static_page(self) -> None:
-        pages: tuple = ('/about/author/', '/about/tech/')
-        for page in pages:
-            response = self.guest_client.get(page)
-            error_name: str = f'Ошибка: нет доступа до страницы {page}'
-            self.assertEqual(response.status_code, HTTPStatus.OK, error_name)
-
-    def test_urls_uses_correct_template(self) -> None:
-        templates_url_names: dict = {
-            'product_id': 'my_shop/product/list.html',
-        }
-        for adress, template in templates_url_names.items():
-            with self.subTest(adress=adress):
-                response = self.guest_client.get(adress)
-                error_name: str = f'Ошибка: {adress} ожидал шаблон {template}'
-                self.assertTemplateUsed(response, template, error_name)
-
-class ProductTest(TestCase):
+class CategoryModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.actor = Product.objects.create(
-            name="John",
-            price="10.5")
+        Category.objects.create(name='Test Category', slug='test-category')
 
+    def test_name_label(self):
+        category = Category.objects.get(id=1)
+        field_label = category._meta.get_field('name').verbose_name
+        self.assertEquals(field_label, 'Название')
 
+    def test_slug_label(self):
+        category = Category.objects.get(id=1)
+        field_label = category._meta.get_field('slug').verbose_name
+        self.assertEquals(field_label, 'Сокращ_урл')
 
+class ProductModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Category.objects.create(name='Test Category', slug='test-category')
+        category = Category.objects.get(id=1)
+        Product.objects.create(category=category, name='Test Product', slug='test-product', price=10.00, stock=100)
 
+    def test_name_label(self):
+        product = Product.objects.get(id=1)
+        field_label = product._meta.get_field('name').verbose_name
+        self.assertEquals(field_label, 'Название')
 
+    def test_price_label(self):
+        product = Product.objects.get(id=1)
+        field_label = product._meta.get_field('price').verbose_name
+        self.assertEquals(field_label, 'Цена')
