@@ -1,10 +1,6 @@
-import email
-from io import BytesIO
-import weasyprint
 from celery import shared_task
 from django.core.mail import send_mail
 from orders.models import Order
-from django.template.loader import render_to_string
 
 
 @shared_task
