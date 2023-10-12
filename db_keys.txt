@@ -1,6 +1,0 @@
-DB_NAME=mydb
-DB_USER=mydb_user
-DB_PASSWORD=password
-DB_HOST=localhost
-DB_PORT=5432
-E_H_PAS = rqhynvexdwiqebzl
