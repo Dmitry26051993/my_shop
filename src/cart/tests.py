@@ -2,9 +2,8 @@ from cart.views import cart_add, cart_remove, cart_detail
 from my_shop.models import Category, Product
 from my_shop.views import product_list, product_detail
 from django.test import TestCase, RequestFactory
-from orders.models import OrderItem, Order
 from cart.cart import Cart
-from orders.views import order_create, admin_order_detail
+
 
 
 class CategoryModelTest(TestCase):
