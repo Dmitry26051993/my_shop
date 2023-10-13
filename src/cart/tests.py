@@ -73,8 +73,15 @@ class CartTestCase(TestCase):
 class ProductTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-        self.category = Category.objects.create(name='Test Category', slug='test-category')
-        self.product = Product.objects.create(name='Test Product', price=10, available=True, category=self.category)
+
+        Category.objects.create(name='Test Category', slug='test-category')
+        cat = Category.objects.get(id=1)
+
+        self.product = Product.objects.create(
+            name='Test Product',
+            price=10,
+            stock=1,
+            category=cat)
 
     def test_product_list(self):
         request = self.factory.get('/product/list/')
