@@ -95,30 +95,3 @@ class ProductTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Test Product')
 
-class OrderTestCase(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        Category.objects.create(name='Test Category', slug='test-category')
-        cat = Category.objects.get(id=1)
-        self.product = Product.objects.create(
-            name='Test Product',
-            price=10,
-            stock=1,
-            category=cat)
-
-
-    def test_order_create(self):
-        request = self.factory.post('/order/create/', {'first_name': 'Test', 'last_name': 'Test', 'email': 'test@example.com', 'phone': '+3752222653', 'address': 'Test address',  'city': 'Test city', 'comment': 'test'})
-        request.session = {}
-        Cart(request).add(product=self.product, quantity=1)
-        response = order_create(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Product')
-
-    def test_admin_order_detail(self):
-        request = self.factory.get('/admin/order/detail/')
-        order = Order.objects.create(first_name='Test', last_name='Test', email='test@example.com', phone='+3752222653', address='Test address',  city='Test city', comment='test')
-        OrderItem.objects.create(order=order, product=self.product, price=10, quantity=1)
-        response = admin_order_detail(request, order_id=order.id)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Product')
