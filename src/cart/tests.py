@@ -39,7 +39,15 @@ class ViewsTestCase(TestCase):
 class CartTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-        self.product = Product.objects.create(name='Test Product', price=10)
+
+        Category.objects.create(name='Test Category', slug='test-category')
+        cat = Category.objects.get(id=1)
+
+        self.product = Product.objects.create(
+            name='Test Product',
+            price=10,
+            stock=1,
+            category=cat)
 
     def test_cart_add(self):
         request = self.factory.post('/cart/add/', {'quantity': 1, 'update': False})
