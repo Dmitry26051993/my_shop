@@ -16,7 +16,8 @@ class CategoryModelTest(TestCase):
         category = Category.objects.get()
         category.name = category._meta.get_field('name').verbose_name
         category.slug = category._meta.get_field('slug').verbose_name
-        self.assertEquals(category.name, 'Название'), (category.slug, 'Сокращ_урл')
+        self.assertEquals(category.name, 'Название')
+        self.assertEquals(category.slug, 'Сокращ_урл')
 
 class ProductModelTest(TestCase):
     @classmethod
@@ -29,7 +30,8 @@ class ProductModelTest(TestCase):
         product = Product.objects.get(id=1)
         product.name = product._meta.get_field('name').verbose_name
         product.price = product._meta.get_field('price').verbose_name
-        self.assertEquals(product.name, 'Название'), (product.price, 'Цена')
+        self.assertEquals(product.name, 'Название')
+        self.assertEquals(product.price, 'Цена')
 
 class ViewsTestCase(TestCase):
     def test_index_loads_properly(self):
@@ -39,7 +41,6 @@ class ViewsTestCase(TestCase):
 class CartTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-
         Category.objects.create(name='Test Category', slug='test-category')
         cat = Category.objects.get(id=1)
         self.product = Product.objects.create(
@@ -73,10 +74,8 @@ class CartTestCase(TestCase):
 class ProductTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-
         Category.objects.create(name='Test Category', slug='test-category')
         cat = Category.objects.get(id=1)
-
         self.product = Product.objects.create(
             name='Test Product',
             price=10,
@@ -97,6 +96,16 @@ class ProductTestCase(TestCase):
         self.assertContains(response, 'Test Product')
 
 class OrderTestCase(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        Category.objects.create(name='Test Category', slug='test-category')
+        cat = Category.objects.get(id=1)
+        self.product = Product.objects.create(
+            name='Test Product',
+            price=10,
+            stock=1,
+            category=cat)
+
 
     def test_order_create(self):
         request = self.factory.post('/order/create/', {'first_name': 'Test', 'last_name': 'Test', 'email': 'test@example.com', 'phone': '+3752222653', 'address': 'Test address',  'city': 'Test city', 'comment': 'test'})
@@ -108,7 +117,6 @@ class OrderTestCase(TestCase):
 
     def test_admin_order_detail(self):
         request = self.factory.get('/admin/order/detail/')
-        request.user = self.user
         order = Order.objects.create(first_name='Test', last_name='Test', email='test@example.com', phone='+3752222653', address='Test address',  city='Test city', comment='test')
         OrderItem.objects.create(order=order, product=self.product, price=10, quantity=1)
         response = admin_order_detail(request, order_id=order.id)
