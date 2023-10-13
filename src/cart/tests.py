@@ -42,7 +42,6 @@ class CartTestCase(TestCase):
 
         Category.objects.create(name='Test Category', slug='test-category')
         cat = Category.objects.get(id=1)
-
         self.product = Product.objects.create(
             name='Test Product',
             price=10,
