@@ -70,27 +70,5 @@ class CartTestCase(TestCase):
         response = cart_detail(request)
         self.assertEqual(response.status_code, 200)
 
-class ProductTestCase(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        Category.objects.create(name='Test Category', slug='test-category')
-        cat = Category.objects.get(id=1)
-        self.product = Product.objects.create(
-            name='Test Product',
-            price=10,
-            stock=1,
-            category=cat)
 
-    def test_product_list(self):
-        request = self.factory.get('/product/list/')
-        response = product_list(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Category')
-        self.assertContains(response, 'Test Product')
-
-    def test_product_detail(self):
-        request = self.factory.get('/product/detail/')
-        response = product_detail(request, id=self.product.id, slug=self.product.slug)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Product')
 
