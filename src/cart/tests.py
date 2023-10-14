@@ -11,7 +11,7 @@ class CategoryModelTest(TestCase):
         Category.objects.create(name='Test Category', slug='test-category')
 
     def test_name_label(self):
-        category = Category.objects.get()
+        category = Category.objects.first()
         category.name = category._meta.get_field('name').verbose_name
         category.slug = category._meta.get_field('slug').verbose_name
         self.assertEquals(category.name, 'Название')
@@ -21,11 +21,11 @@ class ProductModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         Category.objects.create(name='Test Category', slug='test-category')
-        category = Category.objects.get(id=1)
+        category = Category.objects.first()
         Product.objects.create(category=category, name='Test Product', slug='test-product', price=1, stock=1)
 
     def test_name_label(self):
-        product = Product.objects.get(id=1)
+        product = Product.objects.first()
         product.name = product._meta.get_field('name').verbose_name
         product.price = product._meta.get_field('price').verbose_name
         self.assertEquals(product.name, 'Название')
@@ -40,7 +40,7 @@ class CartTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         Category.objects.create(name='Test Category', slug='test-category')
-        cat = Category.objects.get(id=1)
+        cat = Category.objects.first()
         self.product = Product.objects.create(
             name='Test Product',
             price=10,
@@ -49,14 +49,14 @@ class CartTestCase(TestCase):
 
     def test_cart_add(self):
         request = self.factory.post('/cart/add/', {'quantity': 1, 'update': False})
-        request.session = {}
+        self.session = request.session
         response = cart_add(request, product_id=self.product.id)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/cart/cart_detail/')
 
     def test_cart_remove(self):
         request = self.factory.post('/cart/remove/', {})
-        request.session = {}
+        self.session = request.session
         Cart(request).add(product=self.product, quantity=1)
         response = cart_remove(request, product_id=self.product.id)
         self.assertEqual(response.status_code, 302)
@@ -64,10 +64,11 @@ class CartTestCase(TestCase):
 
     def test_cart_detail(self):
         request = self.factory.get('/cart/detail/')
-        request.session = {}
+        self.session = request.session
         Cart(request).add(product=self.product, quantity=1)
         response = cart_detail(request)
         self.assertEqual(response.status_code, 200)
+
 
 
 
